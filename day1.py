@@ -14,6 +14,3 @@ for line in lines:
 elf_sums.sort(reverse=True)
 print(f"Part 1: {elf_sums[0]}")
 print(f"Part 2: {sum(elf_sums[:3])}")
-
-elf_sums.sort()
-print(sum(elf_sums[-3:]))
