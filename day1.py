@@ -1,4 +1,4 @@
-with open('day1.txt') as f:
+with open('inputs/day1.txt') as f:
     lines = [line.rstrip() for line in f]
 
 elf_sums = []
@@ -13,4 +13,7 @@ for line in lines:
 
 elf_sums.sort(reverse=True)
 print(f"Part 1: {elf_sums[0]}")
-print(f"Part 2: {sum(elf_sums[0:3])}")
+print(f"Part 2: {sum(elf_sums[:3])}")
+
+elf_sums.sort()
+print(sum(elf_sums[-3:]))
