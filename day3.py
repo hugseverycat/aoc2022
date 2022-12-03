@@ -8,7 +8,7 @@ with open(filename) as f:
 def get_priority(c):
     # A function to convert single characters into priorities
     # ord(c) turns c into its ascii value, which needs to be adjusted to match
-    # priorities in the problem stated
+    # priorities in the problem statement
     if c.isupper():
         return ord(c) - 38
     return ord(c) - 96
@@ -34,7 +34,7 @@ for this_line in lines:
     # Part 2
     elf_group.append(this_line)
     if elf_counter == 2:
-        # Once we have a set of 3 elves, convert list items to sets and find the intersection
+        # Once we have a group of 3 elves, convert list items to sets and find the intersection
         dup_p2 = next(iter(set(elf_group[0]).intersection(set(elf_group[1]), set(elf_group[2]))))
         priority_p2 += get_priority(dup_p2)
         elf_counter = 0
