@@ -8,7 +8,7 @@ with open(filename) as f:
 def get_priority(c):
     # A function to convert single characters into priorities
     # ord(c) turns c into its ascii value, which needs to be adjusted to match
-    # priorities in the problem stated
+    # priorities in the problem statement
     if c.isupper():
         return ord(c) - 38
     return ord(c) - 96
