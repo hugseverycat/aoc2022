@@ -7,6 +7,8 @@ with open(filename) as f:
 
 def get_priority(c):
     # A function to convert single characters into priorities
+    # ord(c) turns c into its ascii value, which needs to be adjusted to match
+    # priorities in the problem stated
     if c.isupper():
         return ord(c) - 38
     return ord(c) - 96
@@ -21,7 +23,7 @@ for this_line in lines:
     # Part 1
 
     # Turning things into sets removes all duplicates
-    c_1 = set(this_line[:len(this_line)//2])
+    c_1 = set(this_line[:len(this_line)//2])    # // operator divides and returns an integer
     c_2 = set(this_line[len(this_line)//2:])
 
     # Find intersection of the sets to get the repeated item
