@@ -1,5 +1,5 @@
 filename = 'inputs/day3.txt'
-#filename = 'inputs/test.txt'
+filename = 'inputs/test.txt'
 
 with open(filename) as f:
     lines = [line.rstrip() for line in f]
@@ -18,7 +18,7 @@ elf_counter = 0
 elf_group = []
 priority_p1 = 0
 priority_p2 = 0
-
+i = 1   # added to help someone on reddit
 for this_line in lines:
     # Part 1
 
@@ -33,9 +33,12 @@ for this_line in lines:
 
     # Part 2
     elf_group.append(this_line)
+
     if elf_counter == 2:
         # Once we have a group of 3 elves, convert list items to sets and find the intersection
         dup_p2 = next(iter(set(elf_group[0]).intersection(set(elf_group[1]), set(elf_group[2]))))
+        print(i, dup_p2)    # added to help someone on reddit
+        i += 1              # added to help someone on reddit
         priority_p2 += get_priority(dup_p2)
         elf_counter = 0
         elf_group = []
