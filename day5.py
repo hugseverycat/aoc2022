@@ -28,7 +28,7 @@ for t in temp_stacks:
     for i in range(9):
         n = i * 4 + 1
         # try-except to skip when a particular string doesn't have anything in the higher
-        # numbered stacks and thus is shorter in length
+        # numbered stacks and thus is shorter in length. also test input.
         try:
             if t[n] == '1':
                 # Don't handle the line that numbers the stacks
@@ -38,6 +38,7 @@ for t in temp_stacks:
         except IndexError:
             break
 
+# Do stuff
 for this_inst in instructions:
     # move X from Y to Z
     temp = deque()
@@ -51,6 +52,7 @@ for this_inst in instructions:
 
 solution = ''
 for s in stacks:
+    # try-except here to handle test input that doesn't have 9 stacks
     try:
         solution += s.pop()
     except IndexError:
