@@ -1,5 +1,5 @@
 filename = 'inputs/day3.txt'
-filename = 'inputs/test.txt'
+#filename = 'inputs/test.txt'
 
 with open(filename) as f:
     lines = [line.rstrip() for line in f]
