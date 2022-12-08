@@ -3,7 +3,7 @@ filename = 'inputs/day7.txt'
 
 
 class Node:
-    def __init__(self, name, parent, size):
+    def __init__(self, name: str, parent, size: int):
         self.name = name
         self.size = size
         self.children = []
