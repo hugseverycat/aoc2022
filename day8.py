@@ -8,6 +8,9 @@ tree_map = {}
 height = len(lines)
 width = len(lines[0])
 
+# Store each tree in the tree_map dictionary where the (x,y) location is the
+# key and the value is the tree height.
+
 for y, this_row in enumerate(lines):
     for x, this_col in enumerate(this_row):
         tree_map[(x, y)] = this_col
@@ -15,27 +18,34 @@ for y, this_row in enumerate(lines):
 visible_count = 0
 max_scenic = 0
 
+# Iterate through each tree in the dictionary.
+
 for coord in tree_map:
     cx, cy = coord
 
-    # Detect whether it is on an edge
+    # If the tree is on an edge, it is visible and has no
+    # scenic value.
     if cx in (0, width - 1) or cy in (0, height - 1):
-        visible_count += 1  # Edge trees are automatically visible
-                            # and have a scenic value of zero
-    else:  # We're an inner tree
-        right = 0
+        visible_count += 1
+
+    # If this is an inner tree, we will walk from the tree towards
+    # an edge. If we reach the edge, the tree is visible in that
+    # direction. We'll keep track of each tree we can see as well.
+    else:
+        right = 0   # Keeps track of how many trees we see
         right_visible = True
         for x in range(cx+1, width):  # Checking to the right
             if tree_map[coord] <= tree_map[x, cy]:
                 right_visible = False
-                right += 1
-                break
+                right += 1  # We can see the tree that blocks us
+                break   # Stop looping; we've been blocked
             else:
-                right += 1
+                right += 1  # We can see a tree that is shorter :)
 
+        # Repeat for each direction.
         left = 0
         left_visible = True
-        for x in range(cx-1, -1, -1):  # Checking to the left
+        for x in range(cx-1, -1, -1):
             if tree_map[coord] <= tree_map[x, cy]:
                 left_visible = False
                 left += 1
@@ -45,7 +55,7 @@ for coord in tree_map:
 
         up = 0
         up_visible = True
-        for y in range(cy-1, -1, -1):  # Checking to the up
+        for y in range(cy-1, -1, -1):
             if tree_map[coord] <= tree_map[cx, y]:
                 up_visible = False
                 up += 1
@@ -55,7 +65,7 @@ for coord in tree_map:
 
         down = 0
         down_visible = True
-        for y in range(cy+1, height):  # Checking to the down
+        for y in range(cy+1, height):
             if tree_map[coord] <= tree_map[cx, y]:
                 down_visible = False
                 down += 1
@@ -63,9 +73,12 @@ for coord in tree_map:
             else:
                 down += 1
 
+        # If the tree is visible from at least one edge, increase
+        # visible_count.
         if up_visible or down_visible or left_visible or right_visible:
             visible_count += 1
 
+        # Calculate scenic value and determine whether it is the biggest
         scenic_value = up * down * left * right
         if scenic_value > max_scenic:
             max_scenic = scenic_value
