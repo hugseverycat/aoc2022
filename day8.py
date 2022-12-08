@@ -7,7 +7,6 @@ with open(filename) as f:
 tree_map = {}
 height = len(lines)
 width = len(lines[0])
-debug_coord = (-1,1)
 
 for y, this_row in enumerate(lines):
     for x, this_col in enumerate(this_row):
