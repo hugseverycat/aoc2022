@@ -7,7 +7,7 @@ with open(filename) as f:
 tree_map = {}
 height = len(lines)
 width = len(lines[0])
-debug_coord = (0,2)
+debug_coord = (-1,1)
 
 for y, this_row in enumerate(lines):
     for x, this_col in enumerate(this_row):
@@ -17,91 +17,68 @@ for y, this_row in enumerate(lines):
 def is_visible(coord, t_map, h, w):
     cx = coord[0]
     cy = coord[1]
-
+    visible = 4
     scenic_score = 1
-    visible_dirs = {'top': True,
-                    'bottom': True,
-                    'left': True,
-                    'right': True}
-    temp_score = 1
-    if coord == debug_coord:
-        print("Checking", coord, "to the left:")
-    for this_x in range(cx-1, 0, -1):
-        if t_map[(this_x, cy)] >= t_map[coord]:
-            if coord == debug_coord:
-                print("  blocked at", (this_x, cy), "by height", t_map[(this_x, cy)])
-            visible_dirs['left'] = False
-            break
-        if coord == debug_coord:
-            print("  sees past", (this_x, cy), "with height", t_map[(this_x, cy)])
-        temp_score += 1
-        if coord == debug_coord:
-            print("  visibility count is now", temp_score)
-    if coord == debug_coord:
-        print(" ", debug_coord, t_map[debug_coord], "can see", temp_score, "trees to the left")
-        print()
 
-    scenic_score *= temp_score
-
-    temp_score = 1
-    if coord == debug_coord:
-        print("Checking", coord, "to the top:")
-    for this_y in range(cy-1, 0, -1):
-        if t_map[(cx, this_y)] >= t_map[coord]:
-            if coord == debug_coord:
-                print("  blocked at", (cx, this_y), "by height", t_map[(cx, this_y)])
-                print("  final visibility is", temp_score)
-            visible_dirs['top'] = False
-            break
+    if cx in (0, w-1) or cy in (0, h-1):
+        #print(coord, "is on the edge")
+        scenic_score = 0
+    else:
+        print(coord, "is in the interior")
+        temp_score = 1
+        for x in range(cx+1, w-1):
+            if t_map[(x, cy)] >= t_map[coord]:
+                visible -= 1
+                break
+            temp_score += 1
+        scenic_score *= temp_score
         if coord == debug_coord:
-            print("  sees past", (cx, this_y), "with height", t_map[(cx, this_y)])
-        temp_score += 1
-        if coord == debug_coord:
-            print("  visibility count is now", temp_score)
-    if coord == debug_coord:
-        print(" ", debug_coord, t_map[debug_coord], "can see", temp_score, "trees to the top")
-        print("---")
-    scenic_score *= temp_score
+            print(coord, "sees", temp_score, "to the right")
+            print("---")
 
-    temp_score = 1
-    if coord == debug_coord:
-        print("Checking", coord, "to the right:")
-    for this_x in range(cx + 1, w-1):
-        if t_map[(this_x, cy)] >= t_map[coord]:
-            visible_dirs['right'] = False
-            if coord == debug_coord:
-                print("  blocked at", (this_x, cy), "by height", t_map[(this_x, cy)])
-                print("  final visibility is", temp_score)
-            break
-        temp_score += 1
+        temp_score = 1
+        for y in range(cy+1, h-1):
+            if t_map[(cx, y)] >= t_map[coord]:
+                visible -= 1
+                break
+            temp_score += 1
+        scenic_score *= temp_score
         if coord == debug_coord:
-            print("  sees past", (this_x, cy), "with height", t_map[(this_x, cy)])
-            print("  visibility count is now", temp_score)
-    if coord == debug_coord:
-        print(" ", debug_coord, t_map[debug_coord], "can see", temp_score, "trees to the right")
-        print("---")
-    scenic_score *= temp_score
+            print(coord, "sees", temp_score, "to the bottom")
+            print("---")
 
-    temp_score = 1
-    if coord == debug_coord:
-        print("Checking", coord, "to the bottom:")
-    for this_y in range(cy + 1, h-1):
-        if t_map[(cx, this_y)] >= t_map[coord]:
-            visible_dirs['bottom'] = False
-            if coord == debug_coord:
-                print("  blocked at", (cx, this_y), "by height", t_map[(cx, this_y)])
-                print("  final visibility is", temp_score)
-            break
-        temp_score += 1
+        temp_score = 1
+        for x in range(cx-1, 0, -1):
+            if t_map[(x, cy)] >= t_map[coord]:
+                visible -= 1
+                break
+            temp_score += 1
+        scenic_score *= temp_score
         if coord == debug_coord:
-            print("  sees past", (cx, this_y), "with height", t_map[(cx, this_y)])
-            print("  visibility count is now", temp_score)
-    if coord == debug_coord:
-        print(" ", debug_coord, t_map[debug_coord], "can see", temp_score, "trees to the bottom")
-        print("---")
-    scenic_score *= temp_score
+            print(coord, "sees", temp_score, "to the left")
+            print("---")
 
-    return (visible_dirs, scenic_score)
+        temp_score = 1
+        for y in range(cy-1, 0, -1):
+            if t_map[(cx, y)] >= t_map[coord]:
+                visible -= 1
+                break
+            temp_score += 1
+        scenic_score *= temp_score
+        if coord == debug_coord:
+            print(coord, "sees", temp_score, "to the top")
+            print("---")
+
+        if visible:
+            print(visible)
+            print(coord, "is visible")
+            print("---")
+        else:
+            print(visible)
+            print(coord, "is not visible")
+            print("---")
+
+    return (visible, scenic_score)
 
 
 visible_count = 0
@@ -109,21 +86,10 @@ max_scenic_score = 0
 max_coord = None
 for c in tree_map:
     v, s = is_visible(c, tree_map, height, width)
+    if v:
+        visible_count += 1
     if s > max_scenic_score:
         max_scenic_score = s
-        max_coord = c
-    if c == debug_coord:
-        print("-----")
-        print(c, tree_map[c], "has a scenic score of", s)
-    vis_dirs = [d for d in v if v[d] is True]
-    if vis_dirs:
-        if c == debug_coord:
-            print(c, tree_map[c], "is visible from", [d for d in v if v[d] is True])
-        visible_count += 1
-    else:
-        pass
-        #print(c, tree_map[c], "is not visible")
-    #print("***")
 
 print("Part 1:", visible_count)
 print("Part 2:", max_scenic_score)
