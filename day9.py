@@ -53,7 +53,7 @@ def solve(num_knots):
             for i in range(1, num_knots):
                 # Move each tail relative to the knot ahead of it in the list
                 knot_list[i] = move_tail(knot_list[i], knot_list[i-1])
-            tail_visited.add(knot_list[-1])  # Set automatically removes dupes
+            tail_visited.add(knot_list[-1])  # Set automatically ignores dupes
     return len(tail_visited)
 
 
