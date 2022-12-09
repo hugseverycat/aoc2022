@@ -28,13 +28,11 @@ def get_visibility(start_tree, t_map, step_directions):
 
     # We will move from the current tree towards the edge
     while current_x in range(0, WIDTH) and current_y in range(0, HEIGHT):
-        # If we encounter a tree that is higher than our start tree
+        visible_trees += 1  # We can see the current tree
+        # Check if our start tree is shorter than the current tree
         if t_map[start_tree] <= t_map[current_x, current_y]:
             is_visible = False  # start_tree is not visible from this side
-            visible_trees += 1  # We can see the tree that blocks us
-            break  # Stop looping; we've been blocked
-        else:
-            visible_trees += 1  # We can see a tree that is shorter :)
+            break  # Leave the while loop early; we've been blocked
         # Next tree, please!
         current_x += step_x
         current_y += step_y
