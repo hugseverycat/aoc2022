@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 filename = 'inputs/day9.txt'
 #filename = 'inputs/test.txt'
 
@@ -40,26 +38,22 @@ def move_tail(t_pos, h_pos):
 def solve(num_knots):
     moves = []
     knot_list = [(0, 0) for _ in range(num_knots)]
-    tail_visited = defaultdict(int)
-    tail_visited[knot_list[-1]] = 1  # Last item in knot list is the tail
+    tail_visited = set()
 
     for this_line in lines:
         moves.append([this_line[0], int(this_line[1])])  # R 17
 
     # Approach: Move the head 1 step in given direction, then loop thru each
     # knot in the tail and move them if necessary. Repeat for the total steps.
-    # If the last knot has changed position, update the tail_visited dictionary.
+    # Add the position of the final knot to the tail_visited set.
     for this_move in moves:
         move_dir, total_steps = this_move
         for _ in range(total_steps):
             knot_list[0] = move_head(move_dir, knot_list[0])
             for i in range(1, num_knots):
                 # Move each tail relative to the knot ahead of it in the list
-                new_knot_position = move_tail(knot_list[i], knot_list[i-1])
-                if new_knot_position != knot_list[i]:
-                    knot_list[i] = new_knot_position
-                    if i == num_knots - 1:
-                        tail_visited[knot_list[i]] += 1
+                knot_list[i] = move_tail(knot_list[i], knot_list[i-1])
+            tail_visited.add(knot_list[-1])  # Set automatically removes dupes
     return len(tail_visited)
 
 
