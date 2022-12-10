@@ -45,9 +45,5 @@ while ci < total_inst:
 
 print(f"Part 1: {signal_strength}")
 
-screen_line = ''
-for i, c in enumerate(screen):
-    screen_line += c
-    if i != 0 and (i+1) % 40 == 0:
-        print(screen_line)
-        screen_line = ''
+for screen_line in [screen[y:y+40] for y in [x * 40 for x in range(0, 6)]]:
+    print(screen_line)
