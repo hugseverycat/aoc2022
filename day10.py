@@ -30,7 +30,6 @@ while ci < total_inst:
     # Now process the commands
     if addx_active:  # Finish the addx command
         x_register += inst_list[ci]
-        sprite_position = [x_register - 1, x_register, x_register + 1]
         addx_active = False
         ci += 1
     elif inst_list[ci] is None:  # Do nothing and move to next inst
