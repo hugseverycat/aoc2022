@@ -35,7 +35,7 @@ def move_tail(t_pos, h_pos):
     return tuple([current + increase for current, increase in zip(t_pos, move_direction)])
 
 
-def solve(num_knots):
+def solve(num_knots: int):
     moves = []
     knot_list = [(0, 0) for _ in range(num_knots)]
     tail_visited = set()
