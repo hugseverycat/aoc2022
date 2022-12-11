@@ -23,7 +23,7 @@ screen = ''
 while ci < total_inst:
     # We draw before doing anything else
     if (cycle - 1) % 40 in range(x_register - 1, x_register + 2):
-        screen += '⬜'
+        screen += '🟩'
     else:
         screen += '⬛'
 
