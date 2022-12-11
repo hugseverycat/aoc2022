@@ -92,14 +92,13 @@ for this_monkey in temp_monkeys:
 for this_monkey in monkey_list:
     this_monkey.set_partners(monkey_list)
 
-for round in range(1, 10001):
-    for this_monkey in monkey_list:
-        #print(f"Monkey {this_monkey.id}:")
-        this_monkey.handle_items()
-    #print(f"After round {round}, the monkeys are holding items with these worry levels:")
-    """for this_monkey in monkey_list:
-        this_monkey.print_items()
-    print()"""
+for _ in range(20):
+    for m in monkey_list:
+        m.handle_items()
 
-inspect = sorted([m.inspect_count for m in monkey_list], reverse=True)
-print(inspect[0] * inspect[1])
+counts = sorted([s.inspect_count for s in monkey_list], reverse=True)
+print(counts[0] * counts[1])
+
+
+# Wrong guesses:
+# 17111423888 (too high)
