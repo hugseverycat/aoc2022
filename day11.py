@@ -4,75 +4,72 @@ filename = 'inputs/day11.txt'
 with open(filename) as f:
     lines = [line.rstrip() for line in f]
 
-lines.append('')
+part = 2
+if part == 1:
+    rounds = 20
+else:
+    rounds = 10000
 
-class Monkey:
-    def __init__(self, input_data):
-        m_id = input_data[0].split(' ')
-        self.id = int(m_id[1][0])
-        self.items = [int(i) for i in input_data[1][18:].split(',')]
-        m_operation = [m.strip() for m in input_data[2].split(' ')]
-        m_test = [m.strip() for m in input_data[3].split(' ')]
-        self.partner_ids = [int(input_data[4][-1]), int(input_data[5][-1])]
+group = [lines[n*7:n*7 + 7] for n in range((len(lines)+1)//7)]
+monkeys = []
 
-        self.op, self.operand = [m_operation[6], m_operation[7]]
-        self.test = int(m_test[-1])
-        self.true_monkey = None
-        self.false_monkey = None
-        self.inspect_count = 0
+for g in group:
+    new_monkey = {
+        'items': [int(i) for i in g[1][18:].split(', ')],
+        'operation': g[2].split(' ')[-2],
+        'operand': g[2].split(' ')[-1],
+        'div_test': int(g[3].split(' ')[-1]),
+        'true_monkey': int(g[4].split(' ')[-1]),
+        'false_monkey': int(g[5].split(' ')[-1]),
+        'inspect_count': 0
+    }
+    monkeys.append(new_monkey)
 
-    def print_items(self):
-        print(f"Monkey {self.id}: {''.join([str(s) + ', ' for s in self.items])}")
+# For part 2, we need to keep the worry level down. One way we
+# can do this is by not caring about the actual worry level, but whether
+# it is divisible by the test number. Since each monkey's test number is
+# a prime, we can multiply all the primes together to get a common denominator.
+# Then in part 2 we can modulo the worry level by the common denominator
+# to get a smaller number that behaves the same way as the larger number
+# with regard to divisibility.
 
-    def set_partners(self, m_list):
-        self.true_monkey = m_list[self.partner_ids[0]]
-        self.false_monkey = m_list[self.partner_ids[1]]
+common_denom = 1
+for this_monkey in monkeys:
+    common_denom *= this_monkey['div_test']
 
-    def increase_worry(self, worry_level, c_len):
-        if self.operand == "old":
-            o = worry_level
-        else:
-            o = int(self.operand)
+for _ in range(rounds):
+    for this_monkey in monkeys:
+        for this_item in this_monkey['items']:
+            this_monkey['inspect_count'] += 1
 
-        if self.op == '*':
-            worry_level = worry_level * o
-        else:
-            worry_level = worry_level + o
-
-        return (worry_level % c_len)
-    def handle_items(self, c_len):
-        for this_item in self.items:
-            self.inspect_count += 1
-            #this_item = self.increase_worry(this_item)//3
-            this_item = self.increase_worry(this_item, c_len)
-            if this_item//self.test == this_item/self.test:
-                self.true_monkey.receive(this_item)
+            # Perform the operation
+            if this_monkey['operation'] == '+':
+                if this_monkey['operand'] == "old":
+                    worry_level = this_item + this_item
+                else:
+                    worry_level = this_item + int(this_monkey['operand'])
             else:
-                self.false_monkey.receive(this_item)
-        self.items = []
+                if this_monkey['operand'] == "old":
+                    worry_level = this_item * this_item
+                else:
+                    worry_level = this_item * int(this_monkey['operand'])
 
-    def receive(self, new_item):
-        self.items.append(new_item)
+            # Reduce worry level
+            if part == 1:
+                worry_level = worry_level//3
+            else:
+                worry_level = worry_level % common_denom
 
+            # Pass item to next monkey
+            if worry_level % this_monkey['div_test'] == 0:
+                pass_monkey = this_monkey['true_monkey']
+            else:
+                pass_monkey = this_monkey['false_monkey']
+            monkeys[pass_monkey]['items'].append(worry_level)
 
-monkey_list = []
-temp_monkeys = [lines[n*7:(n+1) * 7] for n in range(0, len(lines)//7)]
+        # This monkey has passed all items
+        this_monkey['items'] = []
 
-for this_monkey in temp_monkeys:
-    monkey_list.append(Monkey(this_monkey))
-
-for this_monkey in monkey_list:
-    this_monkey.set_partners(monkey_list)
-
-cycle_length = 1
-for m in monkey_list:
-    cycle_length *= m.test
-print(cycle_length)
-
-for _ in range(10000):
-    for m in monkey_list:
-        m.handle_items(cycle_length)
-
-counts = sorted([s.inspect_count for s in monkey_list], reverse=True)
-print(counts[0] * counts[1])
-print(len(monkey_list))
+# Calculate monkey business
+inspections = sorted([m['inspect_count'] for m in monkeys], reverse=True)
+print(f"Part {part}: {inspections[0] * inspections[1]}")
