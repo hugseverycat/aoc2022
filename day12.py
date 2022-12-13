@@ -90,7 +90,7 @@ for h in h_map:
     h_map[h].generate_paths(h_map)
 
 part_2_paths = []
-unreachables = []
+unreachables = set()
 
 for this_coord in h_map:
     if this_coord not in unreachables:
@@ -100,7 +100,7 @@ for this_coord in h_map:
                 part_2_paths.append(result)
             else:
                 for c in result:
-                    unreachables.append(c)
+                    unreachables.add(c)
             if this_coord == start_pos:
                 part_1 = result
 
