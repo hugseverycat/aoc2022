@@ -1,3 +1,5 @@
+from ast import literal_eval
+
 filename = 'inputs/day13.txt'
 #filename = 'inputs/test.txt'
 
@@ -70,7 +72,7 @@ def solve_1(input_list: list):
             pairs.append(temp_pair)
             temp_pair = []
         else:
-            temp_pair.append(eval(this_line))
+            temp_pair.append(literal_eval(this_line))
 
     pairs.append(temp_pair)
 
@@ -89,7 +91,7 @@ def solve_2(input_list: list):
         if this_line == '':
             continue
         else:
-            packet_list.append(eval(this_line))
+            packet_list.append(literal_eval(this_line))
     divider_1 = [[2]]
     divider_2 = [[6]]
     packet_list.append(divider_1)
