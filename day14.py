@@ -91,12 +91,12 @@ def display_map(rock_set: set, occupied_set: set):
     for this_row in range(min_y, max_y):
         row_print = ''
         for this_col in range(min_x, max_x):
-            if (this_col, this_row) not in occupied_set:
+            if (this_col, this_row) == (500, 0):
+                row_print += '❌'
+            elif (this_col, this_row) not in occupied_set:
                 row_print += '⬛'
             elif (this_col, this_row) in rock_set:
                 row_print += '⬜'
-            elif (this_col, this_row) == (500, 0):
-                row_print += '❌'
             elif (this_col, this_row) in occupied_set:
                 row_print += '🟡'
         print(row_print)
