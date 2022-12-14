@@ -94,9 +94,9 @@ def display_map(rock_set: set, occupied_set: set):
             if (this_col, this_row) == (500, 0):
                 row_print += '❌'
             elif (this_col, this_row) not in occupied_set:
-                row_print += '⬛'
-            elif (this_col, this_row) in rock_set:
                 row_print += '⬜'
+            elif (this_col, this_row) in rock_set:
+                row_print += '⬛'
             elif (this_col, this_row) in occupied_set:
                 row_print += '🟡'
         print(row_print)
@@ -113,9 +113,7 @@ keep_going = True
 while keep_going:
     occupied, keep_going = pour_sand(occupied, cave_floor, do_part_2)
 
-if not do_part_2:
-    # Part 2 map is too big and kind of boring
-    display_map(rocks, occupied)
+display_map(rocks, occupied)
 
 sand_count = len(occupied.difference(rocks))  # Coords that are occupied but not rocks
 print(f"Result: {sand_count}")
