@@ -94,9 +94,9 @@ def display_map(rock_set: set, occupied_set: set):
             if (this_col, this_row) == (500, 0):
                 row_print += '❌'
             elif (this_col, this_row) not in occupied_set:
-                row_print += '⬜'
-            elif (this_col, this_row) in rock_set:
                 row_print += '⬛'
+            elif (this_col, this_row) in rock_set:
+                row_print += '⬜'
             elif (this_col, this_row) in occupied_set:
                 row_print += '🟡'
         print(row_print)
