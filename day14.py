@@ -8,7 +8,7 @@ with open(filename) as f:
 
 
 def process_input(lines):
-    s_map = {(500, 0): 'x'}
+    rock_map = {(500, 0)}
 
     for this_line in lines:
         # Start from the 2nd set and look back at the previous
@@ -36,86 +36,86 @@ def process_input(lines):
 
             # Add lines from current (start) to end
             while current_x != end_x or current_y != end_y:
-                s_map[(current_x, current_y)] = "#"
+                rock_map.add((current_x, current_y))
                 current_x += x_inc
                 current_y += y_inc
 
             x_index += 2
             y_index += 2
-    return s_map
+    return rock_map
 
 
-def pour_sand(s_map: dict, c_floor: int, part2: bool):
+def pour_sand(o_map: set, c_floor: int, part2: bool):
     # Drops a single unit of sand and adds its resting position to the map
-    # Returns the updated sand map (s_map) and a bool indicating whether we
-    # should continue dropping sand. True = continue; False = stop
+    # Returns the updated map of occupied locations (o_map) and a bool indicating
+    # whether we should continue dropping sand. True = continue; False = stop
     origin = (500, 0)
     sand_x, sand_y = origin
-    max_y = max([k[1] for k in s_map])
+    max_y = c_floor - 2
 
     while True:
         # If part 2, check if we are just above the floor
         if sand_y + 1 == c_floor and part2:
-            s_map[(sand_x, sand_y)] = 'o'
-            return sand_map, True
+            o_map.add((sand_x, sand_y))
+            return o_map, True
         # If part 1, check if we are falling into the abyss
         elif sand_y > max_y and not part2:
-            return s_map, False
+            return o_map, False
         # Check the 3 possible locations in order of preference
-        elif (sand_x, sand_y + 1) not in s_map:
+        elif (sand_x, sand_y + 1) not in o_map:
             sand_y += 1
-        elif (sand_x - 1, sand_y + 1) not in s_map:
+        elif (sand_x - 1, sand_y + 1) not in o_map:
             sand_x -= 1
             sand_y += 1
-        elif (sand_x + 1, sand_y + 1) not in s_map:
+        elif (sand_x + 1, sand_y + 1) not in o_map:
             sand_x += 1
             sand_y += 1
         # If the sand can't move and is at the origin, Part 2 is done.
         elif (sand_x, sand_y) == origin:
-            s_map[(sand_x, sand_y)] = 'o'
-            return sand_map, False
+            o_map.add((sand_x, sand_y))
+            return o_map, False
         # The sand has stopped moving so we add it to the map and stop looping
         else:
-            s_map[(sand_x, sand_y)] = 'o'
+            o_map.add((sand_x, sand_y) )
             break
 
-    return sand_map, True
+    return o_map, True
 
 
-def display_map(s_map):
-    min_x = min([k[0] for k in s_map]) - 1
-    max_x = max([k[0] for k in s_map]) + 2
-    min_y = min([k[1] for k in s_map]) - 1
-    max_y = max([k[1] for k in s_map]) + 2
+def display_map(rock_set: set, occupied_set: set):
+    min_x = min([c[0] for c in [r for r in occupied_set]]) - 1
+    max_x = max([c[0] for c in [r for r in occupied_set]]) + 2
+    min_y = min([c[1] for c in [r for r in occupied_set]]) - 1
+    max_y = max([c[1] for c in [r for r in occupied_set]]) + 2
 
     for this_row in range(min_y, max_y):
         row_print = ''
         for this_col in range(min_x, max_x):
-            if (this_col, this_row) not in s_map.keys():
+            if (this_col, this_row) not in occupied_set:
                 row_print += '⬛'
-            elif s_map[(this_col, this_row)] == '#':
+            elif (this_col, this_row) in rock_set:
                 row_print += '⬜'
-            elif s_map[(this_col, this_row)] == 'o':
-                row_print += '🟡'
-            elif s_map[(this_col, this_row)] == 'x':
+            elif (this_col, this_row) == (500, 0):
                 row_print += '❌'
+            elif (this_col, this_row) in occupied_set:
+                row_print += '🟡'
         print(row_print)
 
 
 # Change to False to do part 1
-do_part_2 = False    # FYI part 2 takes about 10 seconds to run :(
+do_part_2 = True
 
-sand_map = process_input(input_lines)
-cave_floor = max([k[1] for k in sand_map]) + 2
-
+rocks = process_input(input_lines)
+occupied = set([r for r in rocks])  # Will include both rocks and settled sand
+cave_floor = max([c[1] for c in [r for r in rocks]]) + 2  # Largest y coord + 2
 keep_going = True
 
 while keep_going:
-    sand_map, keep_going = pour_sand(sand_map, cave_floor, do_part_2)
+    occupied, keep_going = pour_sand(occupied, cave_floor, do_part_2)
 
 if not do_part_2:
     # Part 2 map is too big and kind of boring
-    display_map(sand_map)
+    display_map(rocks, occupied)
 
-sand_count = len([sand_map[f] for f in sand_map if sand_map[f] == 'o'])
+sand_count = len(occupied.difference(rocks))  # Coords that are occupied but not rocks
 print(f"Result: {sand_count}")
