@@ -29,6 +29,8 @@ def print_tetris(c: dict, h:int):
             else:
                 print_line += '.'
         print_line += '|'
+        if print_line == '|@@@@@@@|':
+            print_line += f"*********************************{y}"
         print(print_line)
     print("+-------+")
 
@@ -102,8 +104,6 @@ for rock_count in tqdm(range(2022)):
         if horiz:
             rock = temp_rock
             #print(f"Rock {rock_count} moves {jet_pattern[jet]}")
-        else:
-            horiz = True
         jet += 1
 
             # move down and check if rock comes to rest
@@ -126,3 +126,5 @@ for rock_count in tqdm(range(2022)):
     #print_tetris(columns, height)
     #print()
 print(height)
+#print_tetris(columns, height)
+#print(len(jet_pattern))
