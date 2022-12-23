@@ -43,4 +43,12 @@ def get_monkey_value(monk: str, all_monks: dict):
     return monkey_value
 
 
+def get_human_value(monk: str, all_monks: dict):
+    pass
+    # assume we start with lvcv: snlt + humn
+    # (test data: ptdq: humn - dvpt)
+
+    equation = '(lycv - snlt)'
+    
+
 print(get_monkey_value('root', monkeys))
