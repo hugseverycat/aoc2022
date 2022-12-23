@@ -19,11 +19,13 @@ for this_line in board_map:
     if len(this_line) > max_x:
         max_x = len(this_line)
 
-# Fill every horizontal line with whitespace so they are all the same length
+# Pad every horizontal line with whitespace so that they are all the same length
 # This way we don't have to worry about index errors
+# (For part 2 we should never visit these spots)
 for i in range(len(board_map)):
     board_map[i] = board_map[i].ljust(max_x, ' ')
 
+# Find the first valid position from left in the top row
 current_position = (board_map[0].find('.'), 0)
 current_direction = (1, 0)
 
@@ -188,9 +190,10 @@ def do_move(c_pos: tuple, c_dir: tuple, move: str, board: list):
         return c_pos, n_dir
     else:
         move = int(move)
-        cx, cy = c_pos
-        cdx, cdy = c_dir
-        ndx, ndy = c_dir
+        cx, cy = c_pos  # cx, cy, c_pos are only for confirmed moves
+        cdx, cdy = c_dir  # confirmed direction of travel
+        ndx, ndy = c_dir  # ndx, ndy will hold any unconfirmed changes of direction
+                          # for reasons, it starts out as equal to cdx, cdy
 
         for _ in range(move):
             # Get proposed new position (nx, ny)
@@ -226,6 +229,7 @@ def do_move(c_pos: tuple, c_dir: tuple, move: str, board: list):
                 print(f"coming from: ({cx}, {cy})")
                 raise IndexError
 
+        # If we reach this code, we've finished moving with no obstacles
         c_pos = cx, cy
         c_dir = cdx, cdy
         return c_pos, c_dir
